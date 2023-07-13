@@ -26,11 +26,44 @@ describe('Script de pesquisa e colheta de dados', () => {
 
       ///
       
-      cy.busca("google", "cypress", 1, 2); // Aqui entra na página, e pega os dados dos resultados das buscas
+      let listaFinal = [];
+      let palavraChave = "cypress"
+
+      cy.busca("google", palavraChave, 1); // Aqui entra na página, e pega os dados dos resultados das buscas
+
+      listaFinal.push("Resultados do Google: {enter} ---------- {enter}")
 
       cy.get('@lista_rawText').then(lista_rawText => { // Esse bloco é assíncrono, então todo o resto das operações
         cy.log(lista_rawText);                         // utilizando os dados da vez devem ocorrer aqui dentro
-        cy.invertexta("google", lista_rawText);
+        for(let i = 0; i < lista_rawText.length;i++){
+          let xSplitado = lista_rawText[i].split(" ");
+          const countingArr = [];
+          for (let j = 0; j < xSplitado.length; j++){
+            if(countingArr.includes(xSplitado[j])){
+              countingArr[countingArr.indexOf(xSplitado[j])][1] += 1;
+            } else{
+              countingArr.push([xSplitado[j], 1])
+            }
+          }
+        
+        let palavraDominante = ["Erro 01", 0];
+
+        for (let k = 0; k < countingArr.length; k++){
+          if((countingArr[k][1] > palavraDominante[1]) && (countingArr[k][0].toUpperCase().indexOf(palavraChave.toUpperCase()) == -1)){
+            palavraDominante = countingArr[k]
+          }
+        }
+        
+        listaFinal.push(palavraDominante[0]);
+        listaFinal.push("{enter}");
+        }
+
+        listaFinal.push("==========")
+
+
+
+        // A partir daqui já cola tudo que estiver na lista aq de baixo no invertexto
+        cy.invertexta("google", listaFinal);
         cy.wait(15000);
         
       })
@@ -45,7 +78,7 @@ describe('Script de pesquisa e colheta de dados', () => {
       ///
 
       ///
-      cy.log(cy.busca("youtube", "cypress", 1, 2));
+      cy.log(cy.busca("youtube", "cypress", 1));
     });
 
   });

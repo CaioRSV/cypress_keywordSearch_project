@@ -24,8 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add("busca", (website, keyword, search_depth,numWords) => {
-    // numWords = Número de palavras para buscar antes e depois (1 = a-x-a, 2 = a-a-x-a-a)
+Cypress.Commands.add("busca", (website, keyword, search_depth) => {
     if (website === "google"){
         cy.wait(45)
         //
@@ -36,16 +35,24 @@ Cypress.Commands.add("busca", (website, keyword, search_depth,numWords) => {
         
         const lista_rawText = [];
         
-        for (let i = 0; i < search_depth;i++){
+        if (search_depth<=1){
             cy.get('h3').each(($h3)=> {
                 lista_rawText.push($h3.text());
                 //cy.log($h3.text()); // Aqui ta retornando todas iterações de tds os textos de cada vez e etc
             });
-        
-        //cy.log(lista_rawText);
-        return cy.wrap(lista_rawText).as('lista_rawText')
-        //cy.get('button').invoke('text').as('text')
 
+            return cy.wrap(lista_rawText).as('lista_rawText')
+
+        }else {
+            for (let i = 0; i < search_depth;i++){ //Aq ta igual a tava antes por enqnt
+                cy.get('h3').each(($h3)=> {
+                    lista_rawText.push($h3.text());
+                    //cy.log($h3.text()); // Aqui ta retornando todas iterações de tds os textos de cada vez e etc
+                });
+            
+            //cy.log(lista_rawText);
+            return cy.wrap(lista_rawText).as('lista_rawText')
+            //cy.get('button').invoke('text').as('text')
         };
 
         //
@@ -75,7 +82,7 @@ Cypress.Commands.add("busca", (website, keyword, search_depth,numWords) => {
         cy.wait(50)
         //
     }
-});
+}});
 
 Cypress.Commands.add('invertexta', (website, lista_Final)=> {
     cy.visit(Cypress.env("INVERTEXTO_URL"));
