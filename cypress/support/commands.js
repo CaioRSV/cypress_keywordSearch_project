@@ -67,11 +67,34 @@ Cypress.Commands.add("busca", (website, keyword, search_depth) => {
 
         const lista_rawText = [];
 
-        for (let i = 0; i<search_depth;i++){
-            cy.get('[class="style-scope ytd-video-renderer"]').each(($x) => {
+        
+        if(search_depth <= 1){
+            cy.get('[id="video-title"]').each(($x) => {
                 lista_rawText.push($x.text) // Ta retornando meio quebrado mas tá retornando algo
+                cy.log($x.text)
 
-            })
+                
+                })
+            cy.log(lista_rawText);
+            return cy.wrap(lista_rawText).as('lista_rawText')
+
+            }
+        else{
+            for (let i = 0; i < search_depth;i++){ //Aq ta igual a tava antes por enqnt tem q mudar
+                cy.get('[id="video-title"]').each(($x) => {
+                    lista_rawText.push($x.text) // Ta retornando meio quebrado mas tá retornando algo
+    
+                         
+                })
+            cy.log(lista_rawText);
+            return cy.wrap(lista_rawText).as('lista_rawText')        
+
+
+            }
+        
+
+
+        }
         }
 
         //cy.log(lista_rawText);
@@ -82,7 +105,7 @@ Cypress.Commands.add("busca", (website, keyword, search_depth) => {
         cy.wait(50)
         //
     }
-}});
+});
 
 Cypress.Commands.add('invertexta', (website, lista_Final)=> {
     cy.visit(Cypress.env("INVERTEXTO_URL"));
