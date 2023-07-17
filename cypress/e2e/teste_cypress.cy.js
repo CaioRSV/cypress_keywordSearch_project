@@ -51,7 +51,8 @@ describe('Script de pesquisa e colheta de dados', () => {
           // Condicionais: - (Caso o index 1 da lista, que é o n° de ocorrência, for maior que o de palavraDominante atual, pra mostrar só as com mais ocorrências)
           //               - (Caso não dê pra encontrar a palavra chave na string atual, pra evitar de mostrar a palavra-chave)
           //               - (Caso a string atual não esteja já na lista final, pra evitar repetições)
-          if((countingArr[k][1] > palavraDominante[1]) && (countingArr[k][0].toUpperCase().indexOf(palavraChave.toUpperCase()) == -1) && (!listaFinal.includes(countingArr[k][0]))){
+          if((countingArr[k][1] > palavraDominante[1]) && (countingArr[k][0].toUpperCase().indexOf(palavraChave.toUpperCase()) == -1) 
+          && (!listaFinal.includes(countingArr[k][0])) && (countingArr[k][0] != "") && (countingArr[k][0] != "-")){
             palavraDominante = countingArr[k];
 
           }
@@ -68,11 +69,10 @@ describe('Script de pesquisa e colheta de dados', () => {
 
 
         // A partir daqui já cola tudo que estiver na lista aq de baixo no invertexto
-        cy.invertexta("google", listaFinal);
-        cy.wait(10000);
         
       })
-      
+      cy.invertexta("google", listaFinal);
+      cy.wait(1000);
 
     });
 
@@ -82,7 +82,10 @@ describe('Script de pesquisa e colheta de dados', () => {
     it("it description", () => {
       let listaFinal = [];
 
-      cy.busca("youtube", palavraChave, 1).then(() => {
+      listaFinal.push("Resultados do Youtube: {enter} ---------- {enter}") // 'header' antes das infos
+
+      cy.busca("youtube", palavraChave, 1).then(() =>{
+
         cy.get('@lista_rawText').then(lista_rawText => { // Esse bloco é assíncrono, então todo o resto das operações
           cy.log(lista_rawText);                         // utilizando os dados da vez devem ocorrer aqui dentro
           for(let i = 0; i < lista_rawText.length;i++){
@@ -102,7 +105,12 @@ describe('Script de pesquisa e colheta de dados', () => {
             // Condicionais: - (Caso o index 1 da lista, que é o n° de ocorrência, for maior que o de palavraDominante atual, pra mostrar só as com mais ocorrências)
             //               - (Caso não dê pra encontrar a palavra chave na string atual, pra evitar de mostrar a palavra-chave)
             //               - (Caso a string atual não esteja já na lista final, pra evitar repetições)
-            if((countingArr[k][1] > palavraDominante[1]) && (countingArr[k][0].toUpperCase().indexOf(palavraChave.toUpperCase()) == -1) && (!listaFinal.includes(countingArr[k][0]))){
+            if((countingArr[k][1] > palavraDominante[1]) && 
+            (countingArr[k][0].toUpperCase().indexOf(palavraChave.toUpperCase()) == -1) && 
+            (!listaFinal.includes(countingArr[k][0]) &&
+            (countingArr[k][0] != "") && (countingArr[k][0] != "-")
+            
+            )){
               palavraDominante = countingArr[k];
   
             }
@@ -120,17 +128,21 @@ describe('Script de pesquisa e colheta de dados', () => {
   
           // A partir daqui já cola tudo que estiver na lista aq de baixo no invertexto
           cy.invertexta("youtube", listaFinal);
-          cy.wait(10000);
+          cy.wait(1000);
+
+          cy.log(listaFinal)
           
         })
-        
-      });
-      
-      
-      listaFinal.push("Resultados do Youtube: {enter} ---------- {enter}") // 'header' antes das infos
 
 
+
+      })
+    
+      
+
+      
 
     });
   });
+
 });

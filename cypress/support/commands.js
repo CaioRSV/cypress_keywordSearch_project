@@ -44,63 +44,39 @@ Cypress.Commands.add("busca", (website, keyword, search_depth) => {
             return cy.wrap(lista_rawText).as('lista_rawText')
 
         }else {
-            for (let i = 0; i < search_depth;i++){ //Aq ta igual a tava antes por enqnt
-                cy.get('h3').each(($h3)=> {
-                    lista_rawText.push($h3.text());
-                    //cy.log($h3.text()); // Aqui ta retornando todas iterações de tds os textos de cada vez e etc
-                });
-            
-            //cy.log(lista_rawText);
-            return cy.wrap(lista_rawText).as('lista_rawText')
-            //cy.get('button').invoke('text').as('text')
-        };
-
-        //
+            cy.log('Inesperado 5000')
     }
+    }
+
     if (website === "youtube"){
         cy.wait(48)
+
+        const lista_rawText = [];
 
         cy.visit(Cypress.env("YOUTUBE_URL"));
         cy.get('[name="search_query"]')
             .click()
-            .type(keyword).type('{enter}');
-
-        const lista_rawText = [];
-
+            .type(keyword).type('{enter}')
+            
+        cy.wait(900)
+        cy.url().then(url => cy.visit(url));
         
         if(search_depth <= 1){
             cy.get('[id="video-title"]').each(($x) => {
-                lista_rawText.push($x.text) // Ta retornando meio quebrado mas tá retornando algo
-                cy.log($x.text)
-
-                
-                })
-            cy.log(lista_rawText);
-            return cy.wrap(lista_rawText).as('lista_rawText')
-
-            }
-        else{
-            for (let i = 0; i < search_depth;i++){ //Aq ta igual a tava antes por enqnt tem q mudar
-                cy.get('[id="video-title"]').each(($x) => {
-                    lista_rawText.push($x.text) // Ta retornando meio quebrado mas tá retornando algo
+                lista_rawText.push($x.text()) // Ta retornando meio quebrado mas tá retornando algo
+                //cy.log($x.text())
+                });
+                    
+                return cy.wrap(lista_rawText).as('lista_rawText')
     
-                         
-                })
-            cy.log(lista_rawText);
-            return cy.wrap(lista_rawText).as('lista_rawText')        
-
-
+    
+            }else {
+                cy.log('Inesperado 5000')
             }
         
-
-
-        }
+        
         }
 
-        //cy.log(lista_rawText);
-        //
-    
-    }
     if (website === "pinterest"){
         cy.wait(50)
         //
